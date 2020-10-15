@@ -1,11 +1,11 @@
 /* ---------------------------------------
  Exported Module Variable: BracketHandler
  Package:  closingbracket
- Version:  1.0.0  Date: 2020/10/15 14:59:15
+ Version:  1.0.0  Date: 2020/10/15 15:02:26
  Homepage: https://github.com/niebert/closingbracket#readme
  Author:   Engelbert Niehaus
  License:  MIT
- Date:     2020/10/15 14:59:15
+ Date:     2020/10/15 15:02:26
  Require Module with:
     const BracketHandler = require('closingbracket');
  JSHint: installation with 'npm install jshint -g'
@@ -30,8 +30,8 @@ function find_closing_bracket(expression,closebracket,startsearch_at){
       case ")":
           openbracket = "(";
       break;
-      case "<":
-          openbracket = ">";
+      case ">":
+          openbracket = "<";
       break;
       default:
           // undefined bracket

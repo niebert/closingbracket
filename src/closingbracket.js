@@ -15,8 +15,8 @@ function find_closing_bracket(expression,closebracket,startsearch_at){
       case ")":
           openbracket = "(";
       break;
-      case "<":
-          openbracket = ">";
+      case ">":
+          openbracket = "<";
       break;
       default:
           // undefined bracket
