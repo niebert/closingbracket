@@ -4,6 +4,7 @@ Find in a string a closing bracket for an opening bracket. The search function w
 ## Demo of BracketHandler
 The library `closingbracket.js` is imported in WebApp of type [AppLSAC-1](https://en.wikiversity.org/wiki/AppLSAC/Types). Marco definitions in LaTeX have to match opening and closing brackets for parameter counts `[3]` and parameters wrapped in brackets `{}`. With the demo you can play around with bracket definitions in LaTeX.
 * **<a href="https://niebert.github.io/closingbracket" target="demo">Demo BracketHandler` for LaTeX NewCommands</a>**
+* This tool was create for the [Wikiversity learning resource about LaTeX](https://en.wikiversity.org/wiki/LaTeX#Use_Latex_Source_in_Wikiversity)
 
 ## With Browser
 Use a script tag and import the library `closingbracket.js` with:
