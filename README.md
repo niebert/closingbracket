@@ -67,7 +67,7 @@ For Wikiversity learning resources can handle mathematical expression. But for t
 ```
 The next line defines the corresponding command named `\cmd` for the use generating an integral with 3 parameters.
 ```
-\newcommand{\cmd}[3]{\int_{#1}^{#2} f(#3) d#3}
+\newcommand{\cmd}[3]{\int_{#1}^{#2} f(#3) \, d#3}
 ```
 The source definition in LaTeX can be defined by the following command:
 ```
