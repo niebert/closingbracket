@@ -6,8 +6,9 @@
      <!-- Main CSS -->
      <link href="css/main.css" rel="stylesheet">
 
-    <script src="js/loadfile4dom.js"></script>
-    <script src="js/closingbracket.js"></script>
+     <script src="js/loadfile4dom.js"></script>
+     <script src="js/filesaver.js"></script>
+     <script src="js/closingbracket.js"></script>
     <script>
         var lf4d = new LoadFile4DOM();
         var options = {
@@ -46,6 +47,7 @@
           var source = document.getElementById('mytextarea').value;
           vNewCommands = BracketHandler.parse_newcommands(source);
           document.getElementById('myjson').value = JSON.stringify(vNewCommands,null,4);
+          alert("Parsing SUCCESSFUL: "+vNewCommands.length+" newcommands parsed");
         }
 
         function replace4cmd() {
@@ -53,9 +55,22 @@
           if (vNewCommands) {
             var result = replace_newcommands(source,vNewCommands);
             document.getElementById('myresult').value = result;
+            alert("Replacement SUCCESSFUL: see textarea 'Result'");
           } else {
-            alert("WARNING: newcommands were not parsed - parse source document first");
+            alert("WARNING: newcommands were not parsed - parse source document first.\nPress button 'Parse Newcommands'");
           }
+        }
+
+        function save4result() {
+          var vFilename = document.getElementById("tFilename").value;
+          var vContent  = document.getElementById("myresult").value;
+          saveFile2HDD(vFilename,vContent);
+        }
+
+        function saveFile2HDD(pFilename,pContent) {
+              console.log("Blob: saveFile2HDD(pFilename,pContent) pFilename="+JSON.stringify(pFilename,null,4) );
+              var vFile = new Blob([pContent], {type: "text/plain;charset=utf-8"});
+              saveAs(vFile,pFilename);
         }
 
     </script>
@@ -65,25 +80,31 @@
     <h3>Demo Load, Parse and Replace Newcommands in Textfile</h3>
     <ul>
       <li>
-        <button onclick="lf4d.open_dialog('mytxtfile');return false">
+        <button onclick="lf4d.open_dialog('mytxtfile');return false" style="width:200px">
           Load File
         </button>  Load LaTeX Source File
       </li>
       <li>
-        <button onclick="parse4cmd();return false">
+        <button onclick="parse4cmd();return false" style="width:200px">
           Parse Newcommands
-        </button> parse the newcommands in the source document.
+        </button> parse the newcommands in the source document (see generated JSON below).
       </li>
       <li>
-        <button onclick="replace4cmd();return false">
+        <button onclick="replace4cmd();return false" style="width:200px">
           Replace Newcommands
-        </button> parse the newcommands in the source document.
+        </button> replace the calls of macros in the source document and store in textarea "Result".
+      </li>
+      <li>
+        <button onclick="save4result();return false" style="width:200px">
+          Save Result
+        </button>  Save the replaced result into file.<br>
+        <b>Filename:</b> <input type="text" id="tFilename" value="myresult.tex">
       </li>
     </ul>
     <hr>
     <b>Loaded Text:</b><br>
     <textarea id="mytextarea" name="ta1" rows="8" cols="80">
-    Text 
+    Text
     \newcommand{\tool}[2]{Title #1: The #1 is used for #2}
     \newcommand{\cmd}[3]{\int_{#1}^{#2} f(#3) d#3}
 
@@ -101,10 +122,8 @@
     <b>Newcommand JSON:</b><br>
     <textarea id="myjson" name="ta3" rows="8" cols="80" readonly></textarea>
     <hr>
-    <center>
-      <b>
-        <a href="index.html">&lt;&lt; Demo Applications with LoadFile4DOM</a>
-      </b>
-    </center>
+    <HR>
+    <CENTER> <a href="https://github.com/niebert/closingbracket" target="_blank">GitHub-Respository BracketHandler - closingbracket.js</CENTER>
+    <HR>
   </body>
 </html>
