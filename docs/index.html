@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Demo 1: Load File into Text Area</title>
+     <!-- Main CSS -->
+     <link href="css/main.css" rel="stylesheet">
+
+    <script src="js/loadfile4dom.js"></script>
+    <script src="js/closingbracket.js"></script>
+    <script>
+        var lf4d = new LoadFile4DOM();
+        var options = {
+          "debug": false // if true, it will show the hidden <input type="file" ...> loaders in DOM
+        };
+        lf4d.init(document,options);
+        //-----------------------------------------------
+        //----- Create a new Loader "txtfile" -----------
+        //-----------------------------------------------
+        // with MIME type filter use type="text"
+        //var txtfile = lf4d.get_loader_options("mytxtfile","text");
+
+        // if arbitray files are allowed use type="all"
+        var txtfile = lf4d.get_loader_options("mytxtfile","text");
+        // Define what to do with the loaded data
+        txtfile.returntype = "file"; // data contains the file
+        console.log("txtfile: "+JSON.stringify(txtfile));
+        txtfile.onload = function (data,err) {
+          if (err) {
+            // do something on error, perr contains error message
+            console.error(err);
+            alert("ERROR: "+err)
+          } else {
+            // do something with the file content in data e.g. store  in a HTML textarea (e.g. <textarea id="mytextarea" ...>
+            console.log("CALL: txtfile.onload()");
+            document.getElementById("mytextarea").value = data;
+          }
+        };
+        // create the loader txtfile
+        lf4d.create_load_dialog(txtfile);
+        //-----------------------------------------------
+
+        var vNewCommands = null;
+
+        function parse4cmd() {
+          var source = document.getElementById('mytextarea').value;
+          vNewCommands = BracketHandler.parse_newcommands(source);
+          document.getElementById('myjson').value = JSON.stringify(vNewCommands,null,4);
+        }
+
+        function replace4cmd() {
+          var source = document.getElementById('mytextarea').value;
+          if (vNewCommands) {
+            var result = replace_newcommands(source,vNewCommands);
+            document.getElementById('myresult').value = result;
+          } else {
+            alert("WARNING: newcommands were not parsed - parse source document first");
+          }
+        }
+
+    </script>
+  </head>
+  <body onload="lf4d.create()">
+    <h2>Expand LaTeX newcommands</h2>
+    <h3>Demo Load, Parse and Replace Newcommands in Textfile</h3>
+    <ul>
+      <li>
+        <button onclick="lf4d.open_dialog('mytxtfile');return false">
+          Load File
+        </button>  Load LaTeX Source File
+      </li>
+      <li>
+        <button onclick="parse4cmd();return false">
+          Parse Newcommands
+        </button> parse the newcommands in the source document.
+      </li>
+      <li>
+        <button onclick="replace4cmd();return false">
+          Replace Newcommands
+        </button> parse the newcommands in the source document.
+      </li>
+    </ul>
+    <hr>
+    <b>Loaded Text:</b><br>
+    <textarea id="mytextarea" name="ta1" rows="8" cols="80">
+    Text 
+    \newcommand{\tool}[2]{Title #1: The #1 is used for #2}
+    \newcommand{\cmd}[3]{\int_{#1}^{#2} f(#3) d#3}
+
+    \tool{hammer}{nails}
+    \tool{hammer}{nails}
+    \tool{hammer}{nails}
+    Mathematical expressions are
+    $\cmd{4}{5}{x}$ and $\cmd{a}{b}{y}$
+
+    </textarea>
+    <hr>
+    <b>Result:</b><br>
+    <textarea id="myresult" name="ta2" rows="8" cols="80"></textarea>
+    <hr>
+    <b>Newcommand JSON:</b><br>
+    <textarea id="myjson" name="ta3" rows="8" cols="80" readonly></textarea>
+    <hr>
+    <center>
+      <b>
+        <a href="index.html">&lt;&lt; Demo Applications with LoadFile4DOM</a>
+      </b>
+    </center>
+  </body>
+</html>

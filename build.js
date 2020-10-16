@@ -81,11 +81,11 @@ codegen.concat_main(pkg.main,vLibs4Build,pkg);
 console.log("NPM Build DONE: ",pkg.main);
 // LIB:  create the library in /dist folder
 codegen.concat_libs(vLibDist,vLibs4Build,pkg);
-console.log("Build DONE: ",vLibDist);
-/*
+console.log("Build Dist DONE: ",vLibDist);
 // DOCS: create the library in /docs folder
 codegen.concat_libs(vLibOut,vLibs4Build,pkg);
 console.log("Build DONE: ",vLibOut);
+/*
 codegen.create_script_tags4libs("./src/html_src_libs_embed.html",vLibs4Build,pkg);
 
 
