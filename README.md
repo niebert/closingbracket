@@ -1,6 +1,10 @@
 # Closing Bracket Search
 Find in a string a closing bracket for an opening bracket. The search function will start from a specific start index in the string, identifies the start index of the next corresponding opening bracket and finds the corresponding closing bracket provided as parameter. The search function return a object withe the start index, the index of opening bracket and the index of the closing bracket.
 
+## Demo of BracketHandler
+The library `closingbracket.js` is imported in WebApp of type [AppLSAC-1](https://en.wikiversity.org/wiki/AppLSAC/Types). Marco definitions in LaTeX have to match opening and closing brackets for parameter counts `[3]` and parameters wrapped in brackets `{}`. With the demo you can play around with bracket definitions in LaTeX.
+* **<a href="https://niebert.github.io/closingbracket" target="demo">Demo BracketHandler` for LaTeX NewCommands</a>**
+
 ## With Browser
 Use a script tag and import the library `closingbracket.js` with:
 ```html
