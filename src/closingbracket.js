@@ -1,3 +1,18 @@
+/* ---------------------------------------
+ Exported Module Variable: BracketHandler
+ Package:  closingbracket
+ Version:  1.0.4  Date: 2020/10/16 19:04:09
+ Homepage: https://github.com/niebert/closingbracket#readme
+ Author:   Engelbert Niehaus
+ License:  MIT
+ Date:     2020/10/16 19:04:09
+ Require Module with:
+    const BracketHandler = require('closingbracket');
+ JSHint: installation with 'npm install jshint -g'
+ ------------------------------------------ */
+
+/*jshint  laxcomma: true, asi: true, maxerr: 150 */
+/*global alert, confirm, console, prompt */
 function find_closing_bracket(expression,closebracket,startsearch_at){
     var openbracket = "-";
     var vResult = {
@@ -268,17 +283,52 @@ function expand_newcommand(expression,cmd,found) {
   return expression;
 }
 
-function replace_newcommands(expression,pNewCommands) {
-  if (pNewCommands) {
-    for (var i = 0; i < pNewCommands.length; i++) {
+function replace_count_newcommands(expression,pNewCommands) {
+  var count = 0;
+  for (var i = 0; i < pNewCommands.length; i++) {
       var cmd = pNewCommands[i];
-      console.log("replace_newcommands('" + cmd.name + "')");
+      //console.log("replace_count_newcommands('" + cmd.name + "')");
       var search = cmd.name + "{";
       var vFound = expression.indexOf(search);
       while (vFound >= 0) {
+        count++;
         expression = expand_newcommand(expression,cmd,vFound);
         // check if the expression contains more uses of the command cmd
         vFound = expression.indexOf(search);
+      }
+  }
+  console.log("CALL: replace_count_newcommands() - replacements count="+count);
+  return  {
+    "expression":expression,
+    "count":count
+  };
+}
+
+function replace_newcommands(expression,pNewCommands,pmax_recursion) {
+  var max_recursion = pmax_recursion || 5;
+  // macros may also contain other LaTeX commands.
+  // so replacement of the macro in first recursion
+  // needs further replacements of the replaced macros in
+  // the newcommand definition.
+  var recursions = 0;
+  // recursions count the number of recursions the are already performed
+  // max_recursion defines the number of maximal recursions
+  // that will be performed by the newcommand replacements,
+  // the parameter can be set by the function parameters.
+  // if not set the default recursion depth is 5.
+  // max_recursion is safety mechanism for the function.
+  // so that it terminates even if there is a cycle newcommand replacment.
+  // e.g. command "cmd1" uses "cmd2" in the definition and
+  // "cmd2" uses "cmd1" in its definition.
+  if (pNewCommands) {
+    while (recursions < max_recursion) {
+      recursions++;
+      console.log("replace_newcommands() recursion [" +recursions + "]");
+      var vResult = replace_count_newcommands(expression,pNewCommands);
+      if (vResult.count == 0) {
+        recursions = max_recursion
+      } else {
+        expression = vResult.expression;
       }
     }
   } else {
@@ -303,6 +353,13 @@ latex = `
 Mathematical expressions are
 $\\cmd{4}{5}{x}$ and $\\cmd{a}{b}{y}$
 `;
+latex = `
+\\newcommand{\\tool}[2]{\\tooltitle{#1} The #1 is used for #2}
+\\newcommand{\\tooltitle}[1]{Title #1: }
+
+\\tool{hammer}{nails}
+`;
+
 var vNewCommands = parse_newcommands(latex);
 console.log("JSON: "+ JSON.stringify(vNewCommands,null,4));
 var expression = replace_newcommands(latex,vNewCommands);
