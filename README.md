@@ -17,7 +17,7 @@ The bracket handler allows the following closing brackets:
 ## Demo of BracketHandler
 The library `closingbracket.js` is imported in WebApp of type [AppLSAC-1](https://en.wikiversity.org/wiki/AppLSAC/Types). Marco definitions in LaTeX have to match opening and closing brackets for parameter counts `[3]` and parameters wrapped in brackets `{}`. With the demo you can play around with bracket definitions in LaTeX.
 * **<a href="https://niebert.github.io/closingbracket" target="demo">Demo BracketHandler` for LaTeX NewCommands</a>**
-* This tool was create for the [Wikiversity learning resource about LaTeX](https://en.wikiversity.org/wiki/LaTeX#Use_Latex_Source_in_Wikiversity)
+* This tool was created for the [Wikiversity learning resource about LaTeX](https://en.wikiversity.org/wiki/LaTeX#Use_Latex_Source_in_Wikiversity)
 
 
 ## With Browser
@@ -241,4 +241,4 @@ If want to expand the functionality of this library for your purposes
 * fork the library on GitHub,
 * add more functionality to the file `src/closingbracket.js`.
 * run `npm run build`, which updates the `src/main.js` `dist/closingbracket.js`.
-* at the very end of the file an associative array is defined that aggregates all the function that you want to export in NodeJS. 
+* at the very end of the file an associative array is defined that aggregates all the function that you want to export in NodeJS.
