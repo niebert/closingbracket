@@ -1,11 +1,11 @@
 /* ---------------------------------------
  Exported Module Variable: BracketHandler
  Package:  closingbracket
- Version:  1.0.9  Date: 2020/10/20 8:37:05
+ Version:  1.0.10  Date: 2021/04/03 14:47:44
  Homepage: https://github.com/niebert/closingbracket#readme
  Author:   Engelbert Niehaus
  License:  MIT
- Date:     2020/10/20 8:37:05
+ Date:     2021/04/03 14:47:44
  Require Module with:
     const BracketHandler = require('closingbracket');
  JSHint: installation with 'npm install jshint -g'
@@ -178,6 +178,7 @@ function parse_newcommands(expression,index) {
       "definition":"undefined latex newcommand",
       "params":0
     };
+    var vReturn = null;
     //console.log("expression 1='"+expression+"'");
     index = expression.indexOf("\\newcommand{");
     expression = expression.substr(index);
@@ -189,8 +190,9 @@ function parse_newcommands(expression,index) {
       // cmd_name.length = 6 for cmd_name="\mycmd"
       // \newcommand{\mycmd}[3]
       var m = 12 + cmd_name.length + 3;
+      // Check for Parameter Count Definition e.g. "[3]"
       if (expression.indexOf("[") <= m) {
-        var vReturn = find_closing_bracket(expression,"]",12 + cmd_name.length);
+        vReturn = find_closing_bracket(expression,"]",12 + cmd_name.length);
         /* undefined results for
         var vResult = {
           "start_search": 0,
@@ -200,9 +202,9 @@ function parse_newcommands(expression,index) {
         */
         var param_count = 0;
         if (vReturn.openbracket_at >= 0) {
-          if (vReturn.closebracket_at >= 0) {
+          if (vReturn.closebracket_at >= 1) {
             param_count = parseInt(expression.substring(vReturn.openbracket_at+1,vReturn.closebracket_at));
-            console.log("Command '" + cmd.name + "' has " + param_count + " parameter");
+            console.log("Command '" + cmd.name + "' has " + param_count + " parameter - open="+vReturn.openbracket_at+" close="+vReturn.closebracket_at);
           }
         }
         //console.log("Command: '" + cmd_name + "' has "+ param_count+" parameters");
@@ -211,13 +213,27 @@ function parse_newcommands(expression,index) {
         //console.log("expression before definition parsing='"+expression+"'");
         vReturn = find_closing_bracket(expression,"}",0);
         if (vReturn.openbracket_at >= 0) {
-          if (vReturn.closebracket_at >= 0) {
+          if (vReturn.closebracket_at >= 1) {
             cmd.definition =  expression.substring(vReturn.openbracket_at+1,vReturn.closebracket_at);
             //console.log("Definition found for newcommand='" + cmd_name + "' with definition\n'" + cmd.definition + "'");
             expression = expression.substr(cmd.definition.length + expression.indexOf("]") + 3);
             //console.log("expression after definition found='"+expression+"'");
           }
         }
+      } else {
+        // newcommand definition without a parameter brackets "[3]"
+        expression = expression.substr(expression.indexOf("}")+1);
+        vReturn = find_closing_bracket(expression,"}",0);
+        if (vReturn.openbracket_at >= 0) {
+          if (vReturn.closebracket_at >= 1) {
+            cmd.definition =  expression.substring(vReturn.openbracket_at+1,vReturn.closebracket_at);
+            //console.log("Definition found for newcommand='" + cmd_name + "' with definition\n'" + cmd.definition + "'");
+            expression = expression.substr(cmd.definition.length + 3);
+            //console.log("expression after definition found='"+expression+"'");
+          }
+        }
+        //if (expression.indexOf("{") <= m) {
+        //}
       }
       vNewCommands.push(cmd);
     } else {
@@ -311,6 +327,30 @@ function replace_count_newcommands(expression,pNewCommands) {
         // check if the expression contains more uses of the command cmd
         vFound = expression.indexOf(search);
       }
+      search = cmd.name + " ";
+      vFound = expression.indexOf(search);
+      while (vFound >= 0) {
+        count++;
+        expression = expand_newcommand(expression,cmd,vFound);
+        // check if the expression contains more uses of the command cmd
+        vFound = expression.indexOf(search);
+      }
+      search = cmd.name + "$";
+      vFound = expression.indexOf(search);
+      while (vFound >= 0) {
+        count++;
+        expression = expand_newcommand(expression,cmd,vFound);
+        // check if the expression contains more uses of the command cmd
+        vFound = expression.indexOf(search);
+      }
+      search = cmd.name + "(";
+      vFound = expression.indexOf(search);
+      while (vFound >= 0) {
+        count++;
+        expression = expand_newcommand(expression,cmd,vFound);
+        // check if the expression contains more uses of the command cmd
+        vFound = expression.indexOf(search);
+      }
   }
   console.log("CALL: replace_count_newcommands() - replacements count="+count);
   return  {
@@ -384,11 +424,26 @@ console.log("-------------------------------------");
 console.log("Result: '" + expression + "'");
 console.log("-------------------------------------");
 
+function clone_json(a) {
+  var c = JSON.parse(JSON.stringify(a));
+  return c;
+}
+
+function concat_array (a,b) {
+  var c = clone_json(a);
+  var bc = clone_json(b);
+  for (var j = 0; j < bc.length; j++) {
+    c.push(bc[j]);
+  }
+  return c;
+}
 
 var BracketHandler = {
   "find_closing_bracket": find_closing_bracket,
   "parse_newcommands": parse_newcommands,
-  "replace_newcommands": replace_newcommands
+  "replace_newcommands": replace_newcommands,
+  "concat_array":concat_array,
+  "clone_json": clone_json
 };
 
 

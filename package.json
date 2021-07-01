@@ -5,7 +5,7 @@
   "exportvar": "BracketHandler",
   "main": "src/main.js",
   "scripts": {
-    "build": "node ./build.js",
+    "build": "node ./version4index.js; node ./build.js",
     "doctoc": "doctoc ./README.md",
     "test": "node src/main.js"
   },

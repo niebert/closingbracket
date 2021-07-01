@@ -10,6 +10,11 @@
      <script src="js/filesaver.js"></script>
      <script src="js/closingbracket.js"></script>
     <script>
+      function el (pid) {
+        return document.getElementById(pid);
+      }
+
+
         var lf4d = new LoadFile4DOM();
         var options = {
           "debug": false // if true, it will show the hidden <input type="file" ...> loaders in DOM
@@ -34,27 +39,29 @@
           } else {
             // do something with the file content in data e.g. store  in a HTML textarea (e.g. <textarea id="mytextarea" ...>
             console.log("CALL: txtfile.onload()");
-            document.getElementById("mytextarea").value = data;
+            el("mytextarea").value = data;
           }
         };
         // create the loader txtfile
         lf4d.create_load_dialog(txtfile);
         //-----------------------------------------------
-
         var vNewCommands = null;
 
         function parse4cmd() {
-          var source = document.getElementById('mytextarea').value;
+          var source = el('mytextarea').value;
           vNewCommands = BracketHandler.parse_newcommands(source);
-          document.getElementById('myjson').value = JSON.stringify(vNewCommands,null,4);
+          var source_ncmd = el('mynewcommands').value;
+          var vPreDefNewCommands = BracketHandler.parse_newcommands(source_ncmd);
+          vNewCommands = BracketHandler.concat_array(vPreDefNewCommands,vNewCommands);
+          el('myjson').value = JSON.stringify(vNewCommands,null,4);
           alert("Parsing SUCCESSFUL: "+vNewCommands.length+" newcommands parsed");
         }
 
         function replace4cmd() {
-          var source = document.getElementById('mytextarea').value;
+          var source = el('mytextarea').value;
           if (vNewCommands) {
             var result = replace_newcommands(source,vNewCommands);
-            document.getElementById('myresult').value = result;
+            el('myresult').value = result;
             alert("Replacement SUCCESSFUL: see textarea 'Result'");
           } else {
             alert("WARNING: newcommands were not parsed - parse source document first.\nPress button 'Parse Newcommands'");
@@ -62,8 +69,8 @@
         }
 
         function save4result() {
-          var vFilename = document.getElementById("tFilename").value;
-          var vContent  = document.getElementById("myresult").value;
+          var vFilename = el("tFilename").value;
+          var vContent  = el("myresult").value;
           saveFile2HDD(vFilename,vContent);
         }
 
@@ -76,7 +83,7 @@
     </script>
   </head>
   <body onload="lf4d.create()">
-    <h2>Expand LaTeX newcommands</h2>
+    <h2>Expand LaTeX newcommands <div id4marker="version" style="display: inline-block">1.0.10</div></h2>
     <h3>Demo Load, Parse and Replace Newcommands in Textfile</h3>
     <ul>
       <li>
@@ -102,8 +109,13 @@
       </li>
     </ul>
     <hr>
+    <b>Pre-defined Newcommands:</b><br>
+    <textarea id="mynewcommands" name="ta0" rows="4" cols="120">
+    \newcommand{\FCT}[5]{#1: #2 \rightarrow #3, #4 \mapsto #5}
+    </textarea>
+    <hr>
     <b>Loaded Text:</b><br>
-    <textarea id="mytextarea" name="ta1" rows="8" cols="80">
+    <textarea id="mytextarea" name="ta1" rows="8" cols="120">
     Text
     \newcommand{\tool}[2]{Title #1: The #1 is used for #2}
     \newcommand{\cmd}[3]{\int_{#1}^{#2} f(#3) d#3}
@@ -114,16 +126,22 @@
     Mathematical expressions are
     $\cmd{4}{5}{x}$ and $\cmd{a}{b}{y}$
 
+    \begin{displaymath}
+      \FCT{f}{\mathbb{R}^{+}}{\mathbb{R}}{x}{x\cdot sin(x^{-1})}
+    \end{displaymath}
     </textarea>
     <hr>
     <b>Result:</b><br>
-    <textarea id="myresult" name="ta2" rows="8" cols="80"></textarea>
+    <textarea id="myresult" name="ta2" rows="8" cols="120"></textarea>
     <hr>
     <b>Newcommand JSON:</b><br>
-    <textarea id="myjson" name="ta3" rows="8" cols="80" readonly></textarea>
+    <textarea id="myjson" name="ta3" rows="8" cols="120" readonly></textarea>
     <hr>
     <HR>
-    <CENTER> <a href="https://github.com/niebert/closingbracket" target="_blank">GitHub-Respository BracketHandler - closingbracket.js</CENTER>
+    <CENTER> <a href="https://github.com/niebert/closingbracket" target="_blank">GitHub-Respository BracketHandler - closingbracket.js</a>
+      <br>
+      Version: <div id4marker="version" style="display: inline-block">1.0.10</div> - Last Modificaations: <div id4marker="datetime" style="display: inline-block">2021/04/03 14:47:42</div>
+    </CENTER>
     <HR>
   </body>
 </html>

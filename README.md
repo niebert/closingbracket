@@ -202,7 +202,7 @@ Call marco B. \cmdB{NAILS}}
 The cyclic replacement would not terminate if `max_recursion` would not be set for preventing the function from getting into an infinite loop.
 
 ### Source and Destination of LaTeX Source - Browser
-You can create a simple [AppLSAC](https://en.wikiveristy.org/wiki/AppLSAC) with two text areas
+You can create a simple [AppLSAC](https://en.wikiversity.org/wiki/AppLSAC) with two text areas
 * one for the source and
 * one for the results of the replacement.
 
