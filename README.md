@@ -242,3 +242,10 @@ If want to expand the functionality of this library for your purposes
 * add more functionality to the file `src/closingbracket.js`.
 * run `npm run build`, which updates the `src/main.js` `dist/closingbracket.js`.
 * at the very end of the file an associative array is defined that aggregates all the function that you want to export in NodeJS.
+
+## Remark - Parser
+Determine closing brackets is a minor task that is performed in general by parsers and complilers. If you planing to create your own parser, you might want to look for parser generators. E.g. 
+* **[Bison Parser Generator](https://www.gnu.org/software/bison/)** as a general purpose parser generator 
+* **[PEG.js](https://pegjs.org/online)** as parser generator for Javascript
+* **[JavaCC ](https://javacc.github.io/javacc/)
+In general documents must be compliant with a specific structure of (like a HTML page, that starts with `<html  ...>` and ends with `</html>` and has some nested enironments that tell the brower how to render the website). In programming language or mathematicla syntax we a generic concept of opening and closing elements, that are checked during parsing for a syntactical anaylsis and beyond with a semantical analysis, e.g. `a*b` can a syntactically corrext mathematical expression, but the compiler might identify an error when `a` and `b` might be strings and the compiler might not know how to handle a multiplication of strings. For complex tasks it might be useful to learn about grammars and create a grammar for syntax. Put the grammar as input in the Parser generator e.g. [PEG.js](https://pegjs.org/online) and get the Javascript code for the parser. Keep in mind that the gener ated parser in created in Javascript, but the grammar might be designed for HTML pages to parse them. The generated parser (e.g. generated for Javascript) takes a document or string  as input (e.g. HTML page) decompose the text in a sequence of tokens (tokenizer) and then creates an [Abstract Syntax Tree (AST)](https://en.wikiversity.org/wiki/Abstract_Syntax_Tree).
