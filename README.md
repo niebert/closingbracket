@@ -73,24 +73,32 @@ With that macro you can generate the text fragments above much easier by:
 * `\tool{hammer}{nails}`
 The BracketHandler is able to expand the shorter definitions back to the longer definitions without macros.
 
-For Wikiversity learning resources can handle mathematical expression. But for these mathematical expressions used macros might be expanded to the source latex code.   
+### Nested Bracket Pairs
+In LaTeX document or even in [Wikiversity](https://en.wikiversity.org) learning resources or the mathematical expression are defined with LaTeX. For these mathematical expressions the definition of macros might be expanded to the source latex code. Therefore the `BracketHandler` can be used to find the closing bracket of definition for a specific `newcommand` that was used in the source LaTeX document but MediaWiki interpreter for mathematical latex expressions does not understand these defined commands. We consider the LaTeX definition of integrals as examples that create nested brackets for the example.    
 ```
 \int_{4}^{5} f(x) \, dx
 \int_{a}^{b} f(y) \, dy
 \int_{100}^{200} f(z) \, dz
 ```
 The next line defines the corresponding command named `\cmd` for the use generating an integral with 3 parameters.
+* first parameter is the lower limit for the integral e.g. `4`
+* second parameter is the upper limit for the  integral e.g. `5`
+* thirs parameter is argument of the function `f` e.g. `x` 
 ```
 \newcommand{\cmd}[3]{\int_{#1}^{#2} f(#3) \, d#3}
 ```
-The source definition in LaTeX can be defined by the following command:
+The source definition in LaTeX of the integrals mentioned above can be replaced by the following command after the `newcommand` was defined:
 ```
 \cmd{4}{5}{x}
 \cmd{a}{b}{y}
 \cmd{100}{200}{z}
 ```
 In Wikiversity the command `\cmd` is unknown so the latex command must be expanded to the latex source definition of the command.
-
+* determine the new LaTeX command that is defined, e.g. `\cmd` - use the `BracketHandler` for the bracket pairs `{ ... }`
+* parsing the `newcommand` with the `BracketHandler` means to identify the number of parameter, that the comannd requires e.g. `3` for `\cmd` and use the `BracketHandler` for the bracket pairs `[ ... ]`
+* identify the definition of the command `\cmd` which was in this case `\int_{#1}^{#2} f(#3) \, d#3`  -  - use the `BracketHandler` for the bracket pairs `{ ... }`
+The example shows that it is important, not look for the next curley bracket `}`in the string `{\int_{#1}^{#2} f(#3) \, d#3}` because that will be the `}` after `#1` and not the correct closing bracket`}` after `d#3`. The `BracketHandler` determines the nested brackets pair and return the correct position of the corresponding closing bracket.
+.
 ### Replacement of Macro Definition
 Now we assume the source text will look like this:
 ```
