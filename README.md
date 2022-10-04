@@ -45,11 +45,11 @@ var vResult = BracketHandler.find_closing_bracket(str,")",2);
 ```
 The function above start search for the closing bracket `)` beginning from index 2 (i.e. the `C` of `MyCheck...`). It finds the corresponding opening bracket `(` at position 7. and the closing bracket `)` at position 32 (i.e. the `)` after the `add(3,4),x`). The function `find_closing_bracket()` returns a JSON of the following structure:
 ```json
-vResult = {
+{
   "start_search": 2,
   "openbracket_at": 7,
   "closebracket_at": 32
-};
+}
 ```
 
 ## BracketHandler for LaTeX
