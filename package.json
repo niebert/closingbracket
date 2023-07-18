@@ -1,31 +1,31 @@
 {
-  "name": "closingbracket",
-  "version": "1.0.11",
-  "description": "Find in a string a closing bracket for an opening bracket. The search function will start from a specific start index in the string, identifies the start index of the next corresponding opening bracket and finds the corresponding closing bracket provided as parameter. The search function return a object withe the start index, the index of opening bracket and the index of the closing bracket. ",
-  "exportvar": "BracketHandler",
-  "main": "src/main.js",
-  "scripts": {
-    "build": "node ./version4index.js; node ./build.js",
-    "doctoc": "doctoc ./README.md",
-    "test": "node src/main.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/niebert/closingbracket.git"
-  },
-  "keywords": [
-    "Match",
-    "closing",
-    "bracket"
-  ],
-  "devDependencies": {},
-  "dependencies": {
-    "build4code": "^0.3.27"
-  },
-  "author": "Engelbert Niehaus",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/niebert/closingbracket/issues"
-  },
-  "homepage": "https://github.com/niebert/closingbracket#readme"
+    "name": "closingbracket",
+    "version": "1.0.16",
+    "description": "Find in a string a closing bracket for an opening bracket. The search function will start from a specific start index in the string, identifies the start index of the next corresponding opening bracket and finds the corresponding closing bracket provided as parameter. The search function return a object withe the start index, the index of opening bracket and the index of the closing bracket. ",
+    "exportvar": "BracketHandler",
+    "main": "src/main.js",
+    "scripts": {
+        "build": "node ./version4index.js; node ./build.js",
+        "doctoc": "doctoc ./README.md",
+        "test": "node src/main.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/niebert/closingbracket.git"
+    },
+    "keywords": [
+        "Match",
+        "closing",
+        "bracket"
+    ],
+    "devDependencies": {},
+    "dependencies": {
+        "build4code": "^0.3.27"
+    },
+    "author": "Engelbert Niehaus",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/niebert/closingbracket/issues"
+    },
+    "homepage": "https://github.com/niebert/closingbracket#readme"
 }
