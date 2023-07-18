@@ -1,18 +1,4 @@
-/* ---------------------------------------
- Exported Module Variable: BracketHandler
- Package:  closingbracket
- Version:  1.0.4  Date: 2020/10/16 19:04:09
- Homepage: https://github.com/niebert/closingbracket#readme
- Author:   Engelbert Niehaus
- License:  MIT
- Date:     2020/10/16 19:04:09
- Require Module with:
-    const BracketHandler = require('closingbracket');
- JSHint: installation with 'npm install jshint -g'
- ------------------------------------------ */
 
-/*jshint  laxcomma: true, asi: true, maxerr: 150 */
-/*global alert, confirm, console, prompt */
 function find_closing_bracket(expression,closebracket,startsearch_at){
     var openbracket = "-";
     var vResult = {
@@ -63,13 +49,13 @@ function find_closing_bracket(expression,closebracket,startsearch_at){
               // from the bracket stack - i.e. pop from stack.
               // If bracket stack is empty, then this closing
               // bracket is the corresponding bracket for the
-              // first bracket pushed.
+              // last bracket pushed.
               if (expression.charAt(index) == closebracket) {
                 bracket_stack.pop();
                 if (bracket_stack.length == 0) {
                   //console.log("Closing Bracket '" + closebracket+ "' found at position "+index);
                   vResult.closebracket_at = index;
-                  index = expression.length;
+                  index = expression.length; // to end while lopp
                 }
               }
             }
@@ -82,18 +68,135 @@ function find_closing_bracket(expression,closebracket,startsearch_at){
     }
     return vResult;
 }
+
 /*
 var str = "MyCheck(asdas(iasd)asdas asd) ashdj(sakdjk))";
-console.log("String: '" + str +  "'");
+console.log("find_closing_bracket() -  String: '" + str +  "'");
 var vResult = find_closing_bracket(str,")",2);
-console.log("Result: "+JSON.stringify(vResult,null,4));
-console.log("Open Char At " + vResult.openbracket_at + ": '" + str.charAt(vResult.openbracket_at) + "'");
-console.log("Close Char At " + vResult.closebracket_at + ": '" + str.charAt(vResult.closebracket_at) + "'");
+console.log("find_closing_bracket() -  Result: "+JSON.stringify(vResult,null,4));
+console.log("find_closing_bracket() -  Open Char At " + vResult.openbracket_at + ": '" + str.charAt(vResult.openbracket_at) + "'");
+console.log("find_closing_bracket() -  Close Char At " + vResult.closebracket_at + ": '" + str.charAt(vResult.closebracket_at) + "'");
 */
 
+function find_opening_bracket(expression,openbracket,startsearch_at){
+  // searches backwards from the startsearch_at position and finds the
+  // corresponding opening  bracket.
+    var closebracket = "-";
+    var pos_end = 0;
+    if (expression && expression.length > 0) {
+      startsearch_at = (startsearch_at || expression.length-1)
+    }
+    var vResult = {
+      "start_search": startsearch_at,
+      "openbracket_at": -1,
+      "closebracket_at": -1
+    };
+    switch (openbracket) {
+      case "[":
+          closebracket = "]";
+      break;
+      case "{":
+          closebracket = "}";
+      break;
+      case "(":
+          closebracket = ")";
+      break;
+      case "<":
+          closebracket = ">";
+      break;
+      default:
+          // undefined bracket
+          openbracket = "-";
+    }
+    if (openbracket != "-") {
+      var index = startsearch_at;
+      // check character at index if it is already
+      // the closing bracket to start with.
+      while ((index >=0) && (expression.charAt(index)!=closebracket)) {
+        index--;
+      }
 
-function find_command_name(expression,startsearch_at) {
-  var index = (startsearch_at || 0);
+      //console.log("find_opening_bracket("+index+") - String: '" + str +  "'");
+      if (index >= 0) {
+        vResult.closebracket_at = index;
+        //vResult.openbracket_at = index;
+        //console.log("Opening Bracket '" + openbracket+ "' found at position "+index);
+        var bracket_stack = [];
+        // Traverse through string starting from
+        // given index.
+        while (index >= 0){
+
+            if (expression.charAt(index) == closebracket) {
+              // If current character is an
+              // closing bracket push it in stack.
+              // that is performed for the last closing bracket as well.
+              bracket_stack.push(expression.charAt(index));
+            } else {
+              // If current character is a opening
+              // bracket, remove one closing bracket
+              // from the bracket stack - i.e. pop from stack.
+              // If bracket stack is empty, then this closing
+              // bracket is the corresponding bracket for the
+              // last bracket pushed.
+              if (expression.charAt(index) == openbracket) {
+                bracket_stack.pop();
+                // if backet stack is empty opening bracket found
+                if (bracket_stack.length == 0) {
+                  //console.log("Closing Bracket '" + closebracket+ "' found at position "+index);
+                  vResult.openbracket_at = index;
+                  index = -1; // to end while loop
+                }
+              }
+            }
+            index--;
+        }
+
+      } else {
+        console.error("Opening Bracket not found in expression");
+      }
+    }
+    return vResult;
+}
+
+/*
+var str = "MyCheck(asdas(iasd)asdas asd) ashdj(sakdjk))";
+console.log("find_opening_bracket() - String: '" + str +  "'");
+var vResult = find_opening_bracket(str,"(",32);
+console.log("find_opening_bracket() - Result: "+JSON.stringify(vResult,null,4));
+console.log("find_opening_bracket() - Open Char At " + vResult.openbracket_at + ": '" + str.charAt(vResult.openbracket_at) + "'");
+console.log("find_opening_bracket() - Close Char At " + vResult.closebracket_at + ": '" + str.charAt(vResult.closebracket_at) + "'");
+*/
+
+function find_parameter_of_function(expression,fct,fctpos) {
+  var vReturn = {
+    "start_search": 0,
+    "openbracket_at": -1,
+    "closebracket_at": -1
+  };
+  var params4fct = "-"; // undefined;
+  if (expression) {
+    var pos = fctpos || expression.indexOf(fct+"(");
+    if (pos >= 0) {
+      // command is found
+      params4fct = fct;
+      vReturn = find_closing_bracket(expression,")",pos);
+      if (vReturn.openbracket_at >= 0) {
+        if (vReturn.closebracket_at >= 0) {
+          params4fct = expression.substring(vReturn.openbracket_at+1,vReturn.closebracket_at);
+          console.log("parameter '"+params4fct+"' of function found fct='" + fct + "'");
+        }
+      }
+    }
+  }
+  //console.log("expression 3='"+expression+"'");
+  if (params4fct == "-") {
+    console.error("CALL: find_parameter_of_function() - function name not found");
+  }
+  return params4fct;
+}
+
+
+function find_command_name4newcommand(expression,startsearch_at) {
   var cmd_name = "-"; // undefined;
   var vReturn = find_closing_bracket(expression,"}",1);
   /* undefined results for
@@ -111,7 +214,7 @@ function find_command_name(expression,startsearch_at) {
     }
   }
   if (cmd_name == "-") {
-    console.error("CALL: find_command_name() - command name not found");
+    console.error("CALL: find_command_name4newcommand() - command name not found");
   }
   return cmd_name;
 }
@@ -168,7 +271,7 @@ function parse_newcommands(expression,index) {
     index = expression.indexOf("\\newcommand{");
     expression = expression.substr(index);
     //console.log("expression 3='"+expression+"'");
-    var cmd_name = find_command_name(expression,0);
+    var cmd_name = find_command_name4newcommand(expression,0);
     if (cmd_name != "-") {
       cmd.name = cmd_name;
       // 12 = length "\newcommand{"
@@ -377,38 +480,6 @@ function replace_newcommands(expression,pNewCommands,pmax_recursion) {
   return expression;
 }
 
-
-
-var latex = "Beispiel: \n  \\newcommand{\\mycmd}[3]{Gleichung (\\ref{#1}) $\\frac{#2}{#3}$ Ende} bewirkt\n bei Einsatz in \\mycmd{Nr1}{Bla}{Blub} die Ausgabe";
-latex +=  "\\newcommand{\\secondcmd}[4]{Gleichung {hjsd{}{}} enge} askjdkasld \\noparamdef ladslkl";
-latex +=  "\n \\newcommand{\\noparamdef}{Definition as a no parameter {New{C}{om}}mand } askjdkasld";
-latex = "Beispiel: \\newcommand{\\mycmd}[3]{Gleichung (\\ref{#1}) $\\frac{#2}{#3}$ Ende} bewirkt\n bei Einsatz in \\mycmd{Nr1}{Bla}{Blub} die Ausgabe \\mycmd{FIRST}{SECOND}{THIRD} XXXX";
-latex = `
-\\newcommand{\\tool}[2]{Title #1: The #1 is used for #2}
-\\newcommand{\\cmd}[3]{\\int_{#1}^{#2} f(#3) d#3}
-
-\\tool{hammer}{nails}
-\\tool{hammer}{nails}
-\\tool{hammer}{nails}
-Mathematical expressions are
-$\\cmd{4}{5}{x}$ and $\\cmd{a}{b}{y}$
-`;
-latex = `
-\\newcommand{\\tool}[2]{\\tooltitle{#1} The #1 is used for #2}
-\\newcommand{\\tooltitle}[1]{Title #1: }
-
-\\tool{hammer}{nails}
-`;
-
-var vNewCommands = parse_newcommands(latex);
-console.log("JSON: "+ JSON.stringify(vNewCommands,null,4));
-var expression = replace_newcommands(latex,vNewCommands);
-console.log("-------------------------------------");
-console.log("Source: '" + latex + "'");
-console.log("-------------------------------------");
-console.log("Result: '" + expression + "'");
-console.log("-------------------------------------");
-
 function clone_json(a) {
   var c = JSON.parse(JSON.stringify(a));
   return c;
@@ -425,6 +496,7 @@ function concat_array (a,b) {
 
 var BracketHandler = {
   "find_closing_bracket": find_closing_bracket,
+  "find_opening_bracket": find_opening_bracket,
   "parse_newcommands": parse_newcommands,
   "replace_newcommands": replace_newcommands,
   "concat_array":concat_array,
